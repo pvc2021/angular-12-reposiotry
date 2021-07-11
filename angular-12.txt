@@ -246,6 +246,7 @@ Component Directive
 ==================
 <app-root>  </app-root>
 <ng-template></ng-template>
+<router-outlet><router-outlet>
 
 
 
@@ -262,10 +263,6 @@ Structural Directive    :TemplateRef  and VieContainerRef
 <h1  *show="true">Hello World</h1>
 
 <h1  *hide="true">Hello World</h1>
-
-
-
-
 
 
 
@@ -296,7 +293,7 @@ number
 ======
 number     salary|number:'9.3-4'   
 currency   salary|currency:'Rs'
-percent   salary|percent
+percent    salary|percent
 
 date
 =====
@@ -320,27 +317,19 @@ async
 
 Angular Custom Pipes
 =====================
-gender|gender    
+gender|gender      :1=>Male ,2=>Female, 3=>Not disclosed
 
 
 gender|gender1    =>1 =Mr.  2=>Ms.  3.    
 
 
-employees|orderBy   =>sort employees on id basis in ascending order
+employees|orderBy   =>       sort employees on id basis in ascending order
 
 employees|orderBy:'id'   =>sort employees on id basis in ascending order
 
 employees|orderBy:'name'   =>sort employees on name basis in ascending order
 
 employees|orderBy:'name':true   =>sort employees on name basis in descending order
-
-
-employees|filter:'searchText'
-
-
-
-Angular Application to perform 
-CRUD
 
 
 array.sort((e1,e2)=>e1.id-e2.id);
@@ -350,6 +339,31 @@ array.sort((e1,e2)=>e1.id-e2.id);
 array.sort(function(e1,e2){
 return e1.id-e2.id;
 })
+
+
+employees|filter:'searchText'
+
+
+Install ng2-search-filter Package
+
+   npm i ng2-search-filter
+
+
+Import Ng2SearchPipeModule in AppModule
+
+import {Ng2SearchPipeModule} from "ng2-search-filter";
+
+
+Implementing Search Filter in Angular Component
+
+employees|filter:'searchText'
+
+Run Development Server
+
+
+
+Angular Application to perform CRUD operations
+
 
 
 dummy data
@@ -468,6 +482,8 @@ constructor(private us:UsersService,private route:ActivatedRoute) {
 
 Route Param
 ===========
+
+
 https://jsonplaceholder.typicode.com/users/1
 
        {path:'users/:userId',component:UsersComponent},
