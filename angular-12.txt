@@ -405,27 +405,100 @@ doj:new Date("May 01,2013"),isMarried:false,gender:3,age:25
 
 day3
 =====
-Angular provides HttpClient from HttpClientModule to invoke remote service
+Angular Services  (Reusbale business logic)
+===============================================
 
-RouterModule
-Routes
+Angular provides builtin HttpClient service available in  HttpClientModule  (@angular/common/http) to invoke remote service.
 
 
-day4
+Fake Rest fual Web API
+========================
+
+https://jsonplaceholder.typicode.com/users            GET
+https://jsonplaceholder.typicode.com/users/1          GET
+
+https://jsonplaceholder.typicode.com/posts
+https://jsonplaceholder.typicode.com/posts/1
+https://jsonplaceholder.typicode.com/posts?userId=1
+
+
+https://jsonplaceholder.typicode.com/comments
+https://jsonplaceholder.typicode.com/comments/1
+https://jsonplaceholder.typicode.com/comments?postId=1
+
+
+https://jsonplaceholder.typicode.com/todos
+https://jsonplaceholder.typicode.com/todos/1
+https://jsonplaceholder.typicode.com/todos?userId=1
+
+
+https://jsonplaceholder.typicode.com/albums
+https://jsonplaceholder.typicode.com/albums/1
+https://jsonplaceholder.typicode.com/albums?userId=1
+
+
+https://jsonplaceholder.typicode.com/photos
+https://jsonplaceholder.typicode.com/photos/1
+https://jsonplaceholder.typicode.com/photos?albumId=1
+
+
+
+
+
+5.RouteParams and QueryParams
+=============================
+
+Use ActivatedRoute class to retrieve route params and query params
+
+
+constructor(private us:UsersService,private route:ActivatedRoute) { 
+    console.log("#######  UsersComponent created  ########");
+  }
+
+
+Route Param
+===========
+
+https://jsonplaceholder.typicode.com/users/1
+https://jsonplaceholder.typicode.com/posts/1
+https://jsonplaceholder.typicode.com/todos/1
+https://jsonplaceholder.typicode.com/albums/1
+https://jsonplaceholder.typicode.com/photos/1
+
+
+
+       {path:'users/:userId',component:UsersComponent},
+
+
+        syntax:    this.userId=this.route.snapshot.params.userId;
+
+QueryParams
+============
+
+https://jsonplaceholder.typicode.com/posts?userId=1
+https://jsonplaceholder.typicode.com/albums?userId=1
+https://jsonplaceholder.typicode.com/todos?userId=1
+https://jsonplaceholder.typicode.com/comments?postId=1
+
+
+ syntax  :  this.userId=this.route.snapshot.queryParams.userId;
+
+
+
+
+
+day4 :17-July-2021
 ====
+
 1.NestedComponent(Parent child Communcation)
 
 Parent -> child   => @Input()
 
-Child ->Parent  =>  @Output()  =>EventEmitter
-        
-         
-   
-
-
-
-
-
+Child ->   Parent  =>  @Output()  =>EventEmitter
+     
+ 
+ day5   18-July-2021
+ =====
 
 3.FormValidation
 =================
@@ -462,9 +535,6 @@ FormGroup,FormBuilder,Validators => ReactiveFormsModule
 
 
 
-
-
-
 4.Pagination
 =================
 
@@ -497,8 +567,6 @@ QueryParams
 https://jsonplaceholder.typicode.com/posts?userId=1
 
    syntax  :  this.userId=this.route.snapshot.queryParams.userId;
-
-
 
 
 
