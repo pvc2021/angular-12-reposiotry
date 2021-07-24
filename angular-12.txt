@@ -500,11 +500,11 @@ Child ->   Parent  =>  @Output()  =>EventEmitter
  day5   18-July-2021
  =====
 
+
 3.FormValidation
 =================
 1.Template Driven Forms
 2.Reactive Forms/Model Driven Form 
-
 
 Template Driven Forms Features
 ===============================
@@ -569,33 +569,10 @@ https://jsonplaceholder.typicode.com/posts?userId=1
    syntax  :  this.userId=this.route.snapshot.queryParams.userId;
 
 
-
-Angular Gurads
-===============
-The Angular router’s navigation guards allow to grant or remove access to certain parts of the navigation.
-
-
-Note that client-side route guards like this are not meant to be a security feature. They won't prevent a clever user from figuring out a way to get to the protected routes. Such security should be implemented on the server. They are instead meant as a way to improve the UX for your apps.
-
-Types of Guards
-================
-
-1.CanActivate:
-	 Controls if a route can be activated.
-2.CanActivateChild:
-	 Controls if children of a route can be activated.
-3.CanLoad: 
-	Controls if a route can even be loaded. This becomes useful for feature modules
-	that are lazy loaded. They won’t even load if the guard returns false.
-4.CanDeactivate: 
-	Controls if the user can leave a route. Note that this guard doesn’t prevent the
-	user from closing the browser tab or navigating to a different address. 
-	It only prevents actions from within the application itself.
-
 @ViewChild
 ===========
 
-    1.To Inject The Component
+1.To Inject The Component
 
    @ViewChild(NumberComponent,{static:false}) 
   private n:NumberComponent; 
@@ -617,30 +594,219 @@ Types of Guards
   private city:ElementRef;
   
 
+day5   24-July-2021
+=====
+
+Angular Gurads
+===============
+The Angular router’s navigation guards allow to grant or remove access to certain parts of the navigation.
+Note that client-side route guards like this are not meant to be a security feature. 
+They won't prevent a clever user from figuring out a way to get to the protected routes. 
+Such security should be implemented on the server. They are instead meant as a way to improve the UX for your apps.
+
+Types of Guards
+================
+1.CanActivate:
+	 Controls if a route can be activated.
+
+2.CanActivateChild:
+	 Controls if children of a route can be activated.
+
+3.CanLoad: 
+	Controls if a route can even be loaded. This becomes useful for feature modules
+	that are lazy loaded. They won’t even load if the guard returns false.
+
+4.CanDeactivate: 
+	Controls if the user can leave a route. Note that this guard doesn’t prevent the
+	user from closing the browser tab or navigating to a different address. 
+	It only prevents actions from within the application itself.
 
 
 
+To create guard
+================
 
-Angular CRUD Application
-==========================
+ng g guard guards/Multi
+
+
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, CanDeactivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MultiGuard implements CanActivate, CanActivateChild, CanDeactivate<unknown>, CanLoad {
  
-In Express app
  
-          npm i cors
+  constructor(private router:Router){
+    console.log("=============MultiGuard created=======");
+    
+  }
 
-         In app.js
+ 
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    
+      var email=sessionStorage.getItem("email");
 
-           var cors=require("cors");
+      if(email==null ||email==undefined)
+      {
+        alert("Login First");
+        this.router.navigate(["/login"]);
+        return false;
 
-           app.use(cors()); 
+      }    
+      return true;
+
+  }
+ 
+ 
+  canActivateChild(
+    childRoute: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    
+      var email=sessionStorage.getItem("email");
+
+      if(email!="pradeep@gmail.com")
+      {
+        alert("You are not authorized to visit this section ,try with other credentials");
+        this.router.navigate(["/login"]);
+        return false;
+      }    
+      return true;
+
+  }
+ 
+ 
+  canDeactivate(
+    component: unknown,
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot,
+    nextState?: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    
+    return confirm("Do you want to leave this Page?");
+  }
+ 
+ 
+  canLoad(
+    route: Route,
+    segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    
+      return confirm("Do you want to load this Address Module?");
+ 
+  }
+}
+
+Guard Registration with routes
+===================================
+
+app.routing.module.ts
+=======================
+
+const routes: Routes = [
+  {path:'home',component:HomeComponent,canActivate:[MultiGuard]},
+  {path:'basics',component:AngularBasicsComponent,canActivate:[MultiGuard]},
+  {path:'pipes',component:AngularPipesComponent,canActivate:[MultiGuard]},
+  {path:'technologies',component:TechnologiesComponent,canActivate:[MultiGuard]},
+  {path:'customdirectives',component:CustomDirectivesComponent,canActivate:[MultiGuard]},
+  {path:'nested',component:NestedComponent,canActivate:[MultiGuard],canDeactivate:[MultiGuard]},
+  {path:'viewchild',component:ViewchildComponent,canActivate:[MultiGuard],canDeactivate:[MultiGuard]},
+  {path:'login',component:LoginComponent},
+  {path:'register',component:RegisterComponent},
+  {path:'address',loadChildren:()=>import ("./address/address.module").then(mod=>mod.AddressModule),canLoad:[MultiGuard]},
+    
+  {path:'customers',component:CustomersComponent,canActivate:[MultiGuard]},
+  
+  
+  
+  {path:'casestudy',component:CaseStudyComponent,canActivate:[MultiGuard],canActivateChild:[MultiGuard],
+  children:[
+  {path:'users',component:UsersComponent,
+  children:[
+    {path:'list',component:UsersListComponent},
+    {path:'table',component:UsersTableComponent},
+  ]
+
+},
+  {path:'users/:userId',component:UsersComponent},
+  {path:'posts',component:PostsComponent},
+  {path:'comments',component:CommentsComponent},
+  {path:'todos',component:TodosComponent},
+  {path:'albums',component:AlbumsComponent},
+  {path:'photos',component:PhotosComponent},
+  ]
+},
+ 
+
+  {path:'**',redirectTo:"home"},
+  ];
 
 
 
-Angular  Express Integration
-==============================
-Refer below video
-=====================
-https://www.youtube.com/watch?v=sTbQphoYbK0
+Angular Comonent LifeCycle  Hooks
+===================================
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-parent',
+  templateUrl: './parent.component.html',
+  styleUrls: ['./parent.component.css']
+})
+export class ParentComponent implements OnInit {
+
+  message="Hello Students!!!";
+
+
+  childMessage="";
+
+
+  
+  constructor() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent created   $$$$$$$$$$")
+   }
+
+  ngOnInit() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent initialized   $$$$$$$$$$")
+  }
+  
+  ngOnDestroy() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent destroyed  $$$$$$$$$$")
+   
+  }
+  
+  ngOnChanges() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent ngOnChanges  $$$$$$$$$$")
+  }
+  
+  ngAfterContentInit() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent ngAfterContentInit  $$$$$$$$$$")
+  }
+  
+  ngAfterContentChecked() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent ngAfterContentChecked  $$$$$$$$$$")
+  }
+  
+  ngAfterViewChecked() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent ngAfterViewChecked  $$$$$$$$$$")
+  }
+  
+  ngAfterViewInit() {
+    console.log("$$$$$$$$$$$$$$$$$$ ParentComponent ngAfterViewInit  $$$$$$$$$$")
+  }
+
+
+}
+
+
+
+Angular Readymade CaseStudy
+===============================
+
+https://github.com/DanWahlin/Angular-JumpStart
+
 
 
 
